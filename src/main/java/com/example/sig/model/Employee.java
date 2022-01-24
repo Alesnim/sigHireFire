@@ -5,6 +5,7 @@ import lombok.Generated;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.Period;
 
 @Data
 @Entity
@@ -20,7 +21,14 @@ public class Employee {
 
     private LocalDate firedTime;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    // patch error https://stackoverflow.com/questions/6378526/org-hibernate-persistentobjectexception-detached-entity-passed-to-persist
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "department_id", referencedColumnName = "id")
     private Department departmentId;
+
+
+    public int getWorkDay(LocalDate now) {
+        if (firedTime != null) return Period.between(hireTime, firedTime).getDays();
+        else return Period.between(hireTime, now).getDays();
+    }
 }
