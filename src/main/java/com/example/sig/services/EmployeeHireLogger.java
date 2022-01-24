@@ -17,28 +17,14 @@ public class EmployeeHireLogger {
 
     @Async
     public void callbackHire(LocalDate now, long id, LocalDate hireDate, String departmentName) {
-        String b = String.join(" ", now.toString(),
-                "Сотрудник",
-                String.valueOf(id),
-                "нанят",
-                hireDate.toString(),
-                "Отдел:",
-                departmentName);
-        l.info(b);
+        String res = String.format("Сотрудник %d нанят %s. Отдел: %s", id, hireDate, departmentName);
+        l.info(res);
     }
 
 
     @Async
     public void callbackFire(LocalDate now, long id, LocalDate hireDate, LocalDate fireDate, String deparmentName) {
-        String b = now +
-                " Сотрудник " +
-                id +
-                " уволен " +
-                fireDate +
-                " Отдел: " +
-                deparmentName +
-                " Проработал: " +
-                hireDate.until(fireDate, ChronoUnit.DAYS);
-        l.info(b);
+        String res = String.format("Сотрудник %d уволен %s. Отдел: %s. Проработал: %d", id, fireDate, deparmentName, hireDate.until(fireDate, ChronoUnit.DAYS));
+        l.info(res);
     }
 }
