@@ -1,0 +1,18 @@
+{
+  "properties": [
+    {
+      "name": "sig.startdata",
+      "type": "java.lang.String",
+      "description": "Description for sig.startdata."
+    },
+    {
+      "name": "sig.startDate",
+      "type": "java.lang.String",
+      "description": "Description for sig.startDate."
+    },
+    {
+      "name": "sig.endDate",
+      "type": "java.lang.String",
+      "description": "Description for sig.endDate."
+    }
+  ] }
