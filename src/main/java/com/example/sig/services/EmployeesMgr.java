@@ -21,8 +21,6 @@ import java.util.concurrent.TimeUnit;
 @Component
 @EnableScheduling
 public class EmployeesMgr {
-
-
     private DepartmentRepo departmentRepo;
 
     private EmployersRepo employersRepo;
@@ -48,20 +46,20 @@ public class EmployeesMgr {
 
     }
 
-
     @Scheduled(fixedDelay = 1000)
     public void hireGeneration() {
         if (currentDate.isBefore(dateUtil.getEnd())) {
-
             List<Department> departmentList = new ArrayList<>();
             departmentRepo.findAll().forEach(departmentList::add);
             Employee e = new Employee();
             long days = currentDate.until(dateUtil.getEnd(), ChronoUnit.DAYS);
+            // always days < Int.MaxValue
             int shift = random.nextInt((int) days);
             e.setHireTime(currentDate.plus(Period.ofDays(shift)));
             e.setDepartmentId(departmentList.get(random.nextInt(departmentList.size())));
             e = employersRepo.save(e);
 
+            // async log
             hireLogger.callbackHire(currentDate, e.getId(), e.getHireTime(),
                     employersRepo.getDepartmentNameById(e.getId()));
 
@@ -75,10 +73,11 @@ public class EmployeesMgr {
     public void firePeople() {
         if (counter % 5 == 0) {
             List<Employee> candidateToFire = employersRepo.findAllByHireTimeBefore(currentDate);
-
-            candidateToFire.stream().limit(random.nextInt(4)).forEach(employee -> {
+            int countFire = 3 + 1;
+            candidateToFire.stream().limit(random.nextInt(countFire)).forEach(employee -> {
                 employee.setFiredTime(currentDate);
                 employersRepo.save(employee);
+                // async log
                 hireLogger.callbackFire(currentDate,
                         employee.getId(),
                         employee.getHireTime(),
